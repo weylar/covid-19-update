@@ -9,7 +9,6 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-
 import 'news/Latest.dart';
 
 class MainActivity extends StatefulWidget {
@@ -57,7 +56,7 @@ class _MainActivity extends State<MainActivity> {
               widget.browser.openUrl(
                   url: websites[Random.secure().nextInt(websites.length)],
                   options: InAppBrowserClassOptions(
-                      inAppWebViewWidgetOptions: InAppWebViewWidgetOptions(
+                      inAppWebViewGroupOptions: InAppWebViewGroupOptions(
                           crossPlatform: InAppWebViewOptions(
                             useShouldOverrideUrlLoading: true,
                             useOnLoadResource: true,

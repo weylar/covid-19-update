@@ -84,24 +84,33 @@ class _Statistics extends State<Statistics> {
     if (await _getGraphData() != null) {
       var data = await _getGraphData();
       var list = jsonDecode(data);
-      var response =
-          await http.get(Constant.COUNTRY_COVID_API + country, headers: header);
-      if (response.statusCode == 200) {
-        final List parsed = json.decode(response.body)['data'];
-        if (parsed.isNotEmpty) {
-          var result = CovidResponse.fromJson(parsed.first);
-          if (DateTime.parse(result.date)
-              .isAfter(DateTime.parse(list.first["date"]))) {
-            list.insert(0,
-                {"date": result.date, "confirmedDiff": result.confirmedDiff});
-            list.removeLast();
-            _saveGraphData(json.encode(list));
+      var dayDiff = DateTime.now().day - DateTime.parse(list.first["date"]).day;
+      for (int i = 1; i < dayDiff; i++) {
+        var date = DateTime.now().subtract(Duration(days: i)).toIso8601String();
+        var response = await http.get(
+            Constant.COUNTRY_COVID_API +
+                country +
+                "&date=" +
+                date.split("T")[0],
+            headers: header);
+        if (response.statusCode == 200) {
+          final List parsed = json.decode(response.body)['data'];
+          if (parsed.isNotEmpty) {
+            var result = CovidResponse.fromJson(parsed.first);
+            if (DateTime.parse(result.date)
+                .isAfter(DateTime.parse(list.first["date"]))) {
+              list.insert(0,
+                  {"date": result.date, "confirmedDiff": result.confirmedDiff});
+              list.removeLast();
+              _saveGraphData(json.encode(list));
 
+            }
           }
+        } else {
+          list.add({});
         }
-      } else {
-        list.add({});
       }
+
       print(list.toString());
       return list.cast<Map<String, dynamic>>();
     } else {

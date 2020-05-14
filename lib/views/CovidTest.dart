@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CovidTest extends StatefulWidget {
   CovidTest({Key key}) : super(key: key);
@@ -64,52 +65,66 @@ class _CovidTest extends State<CovidTest> with SingleTickerProviderStateMixin {
               "Note: This is a COVID-19 self assessment tool that" +
                   " was calibrated based on WHO guidelines." +
                   "It is not a diagnostic tool.",
-              style: TextStyle(fontSize: 12.0),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.0),
             ),
           ),
           elevation: 0,
         ),
         body: Container(
-            child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 30.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  BackButton(),
-                ],
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(
-                      left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  child:  Padding(
+                    padding: const EdgeInsets.only(top: 24.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        BackButton(),
+                      ],
+                    ),
+                  ),
+                ),
+
+                Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.75,
+                      child: Column(
                         children: <Widget>[
-                          Text(
-                            "Covid-19 Self Test",
-                            style: TextStyle(
-                                fontSize: 22.0,
-                                color: Colors.deepPurple,
-                                fontWeight: FontWeight.bold),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "Covid-19 Self Test",
+                                style: TextStyle(
+                                    fontSize: 22.0,
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ),
+                          SizedBox(
+                            height: 24.0,
+                          ),
+                           Expanded(
+                             child: Align(
+                               alignment: Alignment.center,
+                               child:
+                                 _currentState < 12 ?
+                                   _buildQuestionWidget(_questions[_currentState]):
+                                      _buildResultContentWidget(),
+
+                             ),
+                           ),
+
                         ],
                       ),
-                      SizedBox(
-                        height: 24.0,
-                      ),
-                      _currentState < 12 ?
-                       _buildQuestionWidget(_questions[_currentState]):
-                          _buildResultContentWidget()
-                    ],
-                  )),
-            ],
-          ),
-        )));
+                    )),
+              ],
+            )));
   }
 
   Widget _buildResultContentWidget(){
@@ -263,7 +278,7 @@ class _CovidTest extends State<CovidTest> with SingleTickerProviderStateMixin {
                                           Radius.circular(50.0)),
                                     )),
                                 child: FlatButton.icon(
-                                    onPressed: null,
+                                  onPressed: () => _call("tel:080097000010"),
                                     icon: Icon(
                                       Icons.call,
                                       color: Colors.white,
@@ -287,7 +302,7 @@ class _CovidTest extends State<CovidTest> with SingleTickerProviderStateMixin {
                                           Radius.circular(50.0)),
                                     )),
                                 child: FlatButton.icon(
-                                    onPressed: null,
+                                    onPressed: () => _sms("sms:+2348099555577"),
                                     icon: Icon(
                                       Icons.textsms,
                                       color: Colors.white,
@@ -404,6 +419,21 @@ class _CovidTest extends State<CovidTest> with SingleTickerProviderStateMixin {
     );
   }
 
+  _call(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
+  }
+
+  _sms(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
+  }
   void _moveToNextQuestion() {
     setState(() {
       _currentState++;

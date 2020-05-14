@@ -25,7 +25,7 @@ update on COVID~19 locally and around the world.
 ### Data Sources:
 * World Health Organization (WHO): https://www.who.int
 * UNICEF: https://www.unicef.org/coronavirus/covid-19
-* Center for Systems Science and Engineering (CSSE) at Johns Hopkins University
+* Center for Systems Science and Engineering (CSSE) at Johns Hopkins University.
 
 ### Screenshots
 

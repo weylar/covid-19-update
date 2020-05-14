@@ -26,3 +26,13 @@ update on COVID~19 locally and around the world.
 * World Health Organization (WHO): https://www.who.int
 * UNICEF: https://www.unicef.org/coronavirus/covid-19
 * Center for Systems Science and Engineering (CSSE) at Johns Hopkins University
+
+### Screenshots
+
+<div>
+<img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(1).png" width="200px" />
+<img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(2).png" width="200px" />
+<img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(3).png" width="200px" />
+<img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(4).png" width="200px" />
+<img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(5).png" width="200px" />
+</div>

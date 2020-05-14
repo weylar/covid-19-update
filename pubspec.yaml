@@ -31,10 +31,7 @@ dependencies:
   flutter_money_formatter: ^0.8.3
   url_launcher: ^5.4.5
   shared_preferences: ^0.5.7
-  flutter_inappwebview: 3.0.0
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  flutter_inappwebview: ^3.1.0
   cupertino_icons: ^0.1.2
 
 dev_dependencies:

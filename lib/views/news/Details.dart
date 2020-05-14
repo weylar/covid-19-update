@@ -1,14 +1,17 @@
 import 'package:covidtracker/models/News.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:timeago/browser_timeago.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+import '../InAppBrowser.dart';
 
 class Details extends StatefulWidget {
   Future<News> _news;
+  final MyInAppBrowser browser = new MyInAppBrowser();
 
   Details(Future<News> news) {
     this._news = news;
@@ -156,11 +159,7 @@ class _Details extends State<Details> {
                               children: <Widget>[
                                 Linkify(
                                   onOpen: (link) async {
-                                    if (await canLaunch(link.url)) {
-                                      await launch(link.url);
-                                    } else {
-                                      throw 'Could not launch $link';
-                                    }
+                                      _launchURL(link.url);
                                   },
                                   text: snapshot.data.content == "null"
                                       ? snapshot.data.description == "null"
@@ -230,10 +229,14 @@ class _Details extends State<Details> {
   }
 
   _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      print('Could not launch $url');
-    }
+    widget.browser.openUrl(
+        url: url,
+        options: InAppBrowserClassOptions(
+            inAppWebViewGroupOptions: InAppWebViewGroupOptions(
+                crossPlatform: InAppWebViewOptions(
+                  useShouldOverrideUrlLoading: true,
+                  useOnLoadResource: true,
+                ))));
+
   }
 }

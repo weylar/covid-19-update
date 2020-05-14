@@ -28,13 +28,12 @@ update on COVID~19 locally and around the world.
 * Center for Systems Science and Engineering (CSSE) at Johns Hopkins University
 
 ### Screenshots
-(https://github.com/weylar/covid-19-update/blob/master/Screenshot%20
-(1).png)
-(https://github.com/weylar/covid-19-update/blob/master/Screenshot%20
-(2).png)
-(https://github.com/weylar/covid-19-update/blob/master/Screenshot%20
-(3).png)
-(https://github.com/weylar/covid-19-update/blob/master/Screenshot%20
-(4).png)
-(https://github.com/weylar/covid-19-update/blob/master/Screenshot%20
-(5).png)
+
+<div>
+<img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(1).png" width="200px" />
+<img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(2).png" width="200px" />
+<img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(3).png" width="200px" />
+<img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(4).png" width="200px" />
+<img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(5).png" width="200px" />
+</div>
+

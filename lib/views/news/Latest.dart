@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
 import 'package:covidtracker/models/News.dart';
 import 'package:covidtracker/util/Constant.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,6 +29,8 @@ class _LatestState extends State<Latest> {
   @override
   void initState() {
     super.initState();
+    FirebaseAnalyticsHelper.setCurrentScreen("LatestNewsPage", "LatestNewsPag"
+        "e");
     _whatNewsShouldLoad();
   }
 
@@ -78,56 +81,56 @@ class _LatestState extends State<Latest> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-          color: Colors.white,
+            color: Colors.white,
             child: SingleChildScrollView(
                 child: Column(
-      children: <Widget>[
-        Padding(
-            padding: const EdgeInsets.only(
-                left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
-            child: Column(
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      "Global News",
-                      style: TextStyle(
-                          fontSize: 22.0,
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                _buildGlobalNews(widget._globalNews),
-                SizedBox(
-                  height: 4.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      "Local News",
-                      style: TextStyle(
-                          fontSize: 20.0,
-                          letterSpacing: 0.0,
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "Source: NewsAPI",
-                      style: TextStyle(
-                          fontSize: 12.0,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.grey),
-                    ),
-                  ],
-                ),
-                _buildLocalNews(widget._localNews)
+                Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              "Global News",
+                              style: TextStyle(
+                                  fontSize: 22.0,
+                                  color: Colors.deepPurple,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        _buildGlobalNews(widget._globalNews),
+                        SizedBox(
+                          height: 4.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              "Local News",
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  letterSpacing: 0.0,
+                                  color: Colors.deepPurple,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "Source: NewsAPI",
+                              style: TextStyle(
+                                  fontSize: 12.0,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                        _buildLocalNews(widget._localNews)
+                      ],
+                    )),
               ],
-            )),
-      ],
-    ))));
+            ))));
   }
 
   Widget _buildGlobalNews(Future<List<News>> news) {
@@ -172,10 +175,15 @@ class _LatestState extends State<Latest> {
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: <Widget>[
-                                    Image.network(
-                                      snapshot.data[position].urlToImage,
-                                      fit: BoxFit.cover,
-                                    ),
+                                    snapshot.data[position].urlToImage !=
+                                           "null"
+                                        ? Image.network(
+                                            snapshot.data[position].urlToImage,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.asset(
+                                            "assets/icons/app_icon.png",
+                                            fit: BoxFit.cover),
                                     Container(
                                       color: Colors.black.withOpacity(0.5),
                                     ),
@@ -342,9 +350,15 @@ class _LatestState extends State<Latest> {
                                     ),
                                     Flexible(
                                       flex: 1,
-                                      child: Image.network(
+                                      child: snapshot.data[position].urlToImage !=
+                                          "null"
+                                          ? Image.network(
                                         snapshot.data[position].urlToImage,
-                                      ),
+                                        fit: BoxFit.cover,
+                                      )
+                                          : Image.asset(
+                                          "assets/icons/app_icon.png",
+                                          fit: BoxFit.cover),
                                     ),
                                   ],
                                 ),

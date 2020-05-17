@@ -1,3 +1,4 @@
+import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
 import 'package:covidtracker/models/News.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +18,22 @@ class Details extends StatefulWidget {
     this._news = news;
   }
 
+
   @override
   _Details createState() => _Details();
 }
 
+
+
 class _Details extends State<Details> {
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAnalyticsHelper.setCurrentScreen("DetailsNewsPage", "Details News"
+        " Page");
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,10 +125,13 @@ class _Details extends State<Details> {
                                       child: Container(
                                         width:
                                             MediaQuery.of(context).size.width,
-                                        child: Image.network(
-                                          snapshot.data.urlToImage,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        child: snapshot.data.urlToImage !=
+                                            "null"
+                                            ? Image.network(
+                                          snapshot.data.urlToImage,)
+                                            : Image.asset(
+                                            "assets/icons/app_icon.png",
+                                            fit: BoxFit.cover),
                                       )),
                                   SizedBox(
                                     height: 12.0,

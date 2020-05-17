@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "757999475579",
+    "firebase_url": "https://covid-19-tracker-fbc8c.firebaseio.com",
+    "project_id": "covid-19-tracker-fbc8c",
+    "storage_bucket": "covid-19-tracker-fbc8c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757999475579:android:9a4b218fd6599f3a957bde",
+        "android_client_info": {
+          "package_name": "com.weylar.covidtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "757999475579-nujlptn5jv07pl2bec1s7m37k1hm3ujf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgL2oRRxrtmPQHip5yz4p9UR5uyTZoSrw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "757999475579-nujlptn5jv07pl2bec1s7m37k1hm3ujf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

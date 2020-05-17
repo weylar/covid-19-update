@@ -1,3 +1,4 @@
+import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
 import 'package:covidtracker/models/Question.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _CovidTest extends State<CovidTest> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    FirebaseAnalyticsHelper.setCurrentScreen("CovidTest", "Covid Test");
     _questions = [
       Question("Do you have cold?", "assets/images/cold.svg", ["Yes", "No"]),
       Question("Do you have cough?", "assets/images/cough.svg", ["Yes", "No"]),
@@ -66,7 +68,7 @@ class _CovidTest extends State<CovidTest> with SingleTickerProviderStateMixin {
                   " was calibrated based on WHO guidelines." +
                   "It is not a diagnostic tool.",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14.0),
+              style: TextStyle(fontSize: 12.0),
             ),
           ),
           elevation: 0,

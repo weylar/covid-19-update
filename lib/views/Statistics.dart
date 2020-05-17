@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
 import 'package:covidtracker/models/CovidResponse.dart';
 import 'package:covidtracker/util/Constant.dart';
 import 'package:covidtracker/views/widgets/BucketingAxisScatterPlotChart.dart';
@@ -33,6 +34,7 @@ class _Statistics extends State<Statistics> {
   @override
   void initState() {
     super.initState();
+    FirebaseAnalyticsHelper.setCurrentScreen("Statistics", "Statistics");
     _responseTotalLocal = _fetchStatisticsTotalLocal();
     _responseTotalGlobal = _fetchStatisticsTotalGlobal();
     _responseConfirmed7DaysDiff = _fetchStatisticsTotalLocal7daysBack();

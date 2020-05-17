@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
 import 'package:covidtracker/models/Country.dart';
 import 'package:covidtracker/util/Constant.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,8 +28,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    FirebaseAnalyticsHelper.setCurrentScreen("Home", "Home");
     _getSavedCountry();
     _countries = _fetchAllCountries();
+
   }
 
   _getSavedCountry() async {
@@ -469,7 +472,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       underline: DropdownButtonHideUnderline(
                         child: Text(""),
                       ),
-                      value: _selectedCountry,
+                      value: _selectedCountry == null ? "Nigeria" :
+                      _selectedCountry,
                       items: snapshot.data.map((Country country) {
                         return DropdownMenuItem<String>(
                           value: country.name,

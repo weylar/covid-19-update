@@ -1,25 +1,41 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:covidtracker/Jobs/WorkScheduler.dart';
 import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
 import 'package:covidtracker/util/Constant.dart';
 import 'package:covidtracker/views/CovidTest.dart';
 import 'package:covidtracker/views/MainActivity.dart';
 import 'package:covidtracker/views/news/Details.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crashlytics/flutter_crashlytics.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
 
 import 'models/News.dart';
+
+void callbackDispatcher() async {
+  Workmanager.executeTask((task, inputData) async {
+    switch (task)  {
+      case simplePeriodicTask:
+        var data = WorkScheduler.checkNewDailyReport();
+        if (await data != null){
+          print("Hello Omo Aminullahi");
+        }else{
+          print("Is this being called at all?");
+        }
+        break;
+    }
+    return Future.value(true);
+  });
+}p
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FlutterError.onError = (FlutterErrorDetails details) {
-    //bool isInDebugMode = false;
     if (!kReleaseMode) {
       FlutterError.dumpErrorToConsole(details);
     } else {
@@ -29,8 +45,12 @@ void main() async {
 
   await FlutterCrashlytics().initialize();
   runZoned<Future<Null>>(() async {
-
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await Workmanager.initialize(callbackDispatcher, isInDebugMode: false);
     runApp(MyApp());
+    if (prefs.containsKey("last_day_fetched")){
+      WorkScheduler.callbackFetchDailyReport();
+    }
   }, onError: (error, stackTrace) async {
     await FlutterCrashlytics()
         .reportCrash(error, stackTrace, forceCrash: false);
@@ -38,7 +58,6 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -46,7 +65,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   Future<List<News>> _globalNews;
   Future<List<News>> _localNews;
-
 
   @override
   initState() {
@@ -59,13 +77,11 @@ class _MyAppState extends State<MyApp> {
   Future<void> _whatNewsShouldLoad() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var value = prefs.get('should_load_alternative_news');
-    if(prefs.containsKey('should_load_alternative_news')) {
+    if (prefs.containsKey('should_load_alternative_news')) {
       setState(() {
-        _localNews = value
-            ? _fetchGlobalNewsIfNoLocal()
-            : _fetchLocalNews();
+        _localNews = value ? _fetchGlobalNewsIfNoLocal() : _fetchLocalNews();
       });
-    }else{
+    } else {
       setState(() {
         _localNews = _fetchLocalNews();
       });

@@ -37,16 +37,16 @@ class _Statistics extends State<Statistics> {
   void initState() {
     super.initState();
     FirebaseAnalyticsHelper.setCurrentScreen("Statistics", "Statistics class");
-    _responseTotalLocal = _fetchStatisticsTotalLocal();
+    _responseTotalLocal = fetchStatisticsTotalLocal();
     _responseTotalGlobal = _fetchStatisticsTotalGlobal();
     _responseConfirmed7DaysDiff = _fetchStatisticsTotalLocal7daysBack();
     SchedulerBinding.instance
         .addPostFrameCallback((_) => Common.showNoNetworkDialog(context));
   }
 
-  Future<List<CovidResponse>> _fetchStatisticsTotalLocal() async {
+  Future<List<CovidResponse>> fetchStatisticsTotalLocal() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     String country = await getCountry();
-    print(country);
     var response =
         await http.get(Constant.COUNTRY_COVID_API + country, headers: {
       "x-rapidapi-key": Constant.API_KEY_STATISTICS,
@@ -54,14 +54,15 @@ class _Statistics extends State<Statistics> {
     });
     if (response.statusCode == 200) {
       final List parsed = json.decode(response.body)['data'];
-      print(parsed.toString());
-      return parsed.map((val) => CovidResponse.fromJson(val)).toList();
+      var result = parsed.map((val) => CovidResponse.fromJson(val)).toList();
+      prefs.setString("last_day_fetched", result[0].date);
+      return result;
     } else {
       return List();
     }
   }
 
-  Future<String> getCountry() async {
+  static Future<String> getCountry() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var country = prefs.getString('country');
     return country;

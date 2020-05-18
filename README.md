@@ -36,3 +36,4 @@ update on COVID~19 locally and around the world.
 <img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(4).png" width="200px" />
 <img src="https://github.com/weylar/covid-19-update/blob/master/Screenshot%20(5).png" width="200px" />
 </div>
+

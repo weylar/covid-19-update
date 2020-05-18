@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
 import 'package:covidtracker/helper/ViewType.dart';
 import 'package:covidtracker/models/News.dart';
 import 'package:covidtracker/views/Home.dart';
 import 'package:covidtracker/views/InAppBrowser.dart';
 import 'package:covidtracker/views/Statistics.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -28,6 +30,8 @@ class MainActivity extends StatefulWidget {
 class _MainActivity extends State<MainActivity> {
   ViewType viewType;
   GlobalKey _bottomNavigationKey = GlobalKey();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +119,8 @@ class _MainActivity extends State<MainActivity> {
   }
 
   Widget _buildPageToShow(ViewType viewType) {
+   FirebaseAnalyticsHelper.setCurrentScreen("MainActivity", "MainActivity "
+       "Class");
     switch (viewType) {
       case ViewType.HOME:
         return MyHomePage.instance;

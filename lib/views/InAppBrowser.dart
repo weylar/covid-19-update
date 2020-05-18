@@ -1,8 +1,11 @@
+import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class MyInAppBrowser extends InAppBrowser {
   @override
   Future onBrowserCreated() async {
+    FirebaseAnalyticsHelper.setCurrentScreen("InAppBrowser", "InAppBrowser "
+        "Class");
   }
 
   @override

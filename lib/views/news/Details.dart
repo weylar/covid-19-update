@@ -1,6 +1,9 @@
+import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
+import 'package:covidtracker/helper/Common.dart';
 import 'package:covidtracker/models/News.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -17,11 +20,24 @@ class Details extends StatefulWidget {
     this._news = news;
   }
 
+
   @override
   _Details createState() => _Details();
 }
 
+
+
 class _Details extends State<Details> {
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => Common.showNoNetworkDialog(context));
+    FirebaseAnalyticsHelper.setCurrentScreen("DetailsNewsPage", "Details News"
+        " Class");
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,10 +129,13 @@ class _Details extends State<Details> {
                                       child: Container(
                                         width:
                                             MediaQuery.of(context).size.width,
-                                        child: Image.network(
-                                          snapshot.data.urlToImage,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        child: snapshot.data.urlToImage !=
+                                            "null"
+                                            ? Image.network(
+                                          snapshot.data.urlToImage,)
+                                            : Image.asset(
+                                            "assets/icons/app_icon.png",
+                                            fit: BoxFit.cover),
                                       )),
                                   SizedBox(
                                     height: 12.0,

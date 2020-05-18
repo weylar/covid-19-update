@@ -58,12 +58,18 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _whatNewsShouldLoad() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var _ = prefs.getBool('should_load_alternative_news');
-    setState(() {
-      _
-          ? _localNews = _fetchGlobalNewsIfNoLocal()
-          : _localNews = _fetchLocalNews();
-    });
+    var value = prefs.get('should_load_alternative_news');
+    if(prefs.containsKey('should_load_alternative_news')) {
+      setState(() {
+        _localNews = value
+            ? _fetchGlobalNewsIfNoLocal()
+            : _fetchLocalNews();
+      });
+    }else{
+      setState(() {
+        _localNews = _fetchLocalNews();
+      });
+    }
   }
 
   Future<List<News>> _fetchGlobalNewsIfNoLocal() async {

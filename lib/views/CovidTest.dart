@@ -109,7 +109,7 @@ class _CovidTest extends State<CovidTest> with SingleTickerProviderStateMixin {
                             ],
                           ),
                           SizedBox(
-                            height: 24.0,
+                            height: 16.0,
                           ),
                            Expanded(
                              child: Align(
@@ -161,55 +161,60 @@ class _CovidTest extends State<CovidTest> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildQuestionWidget(Question question) {
-    return Card(
-        elevation: 10.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16.0))),
-        child: Align(
-          alignment: Alignment.center,
-          child: Container(
-            padding: EdgeInsets.all(32.0),
-            child: Column(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.3,
-                        width: MediaQuery.of(context).size.width * 0.3,
-                        child: SvgPicture.asset(question.image,
-                            semanticsLabel: question.questionText,
-                            placeholderBuilder: (BuildContext context){
-                              return Loading(
-                                  indicator: BallPulseIndicator(),
-                                  size: 40.0,color: Colors.pink);
-                            })),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    Text(
-                      question.questionText,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 22.0, fontWeight: FontWeight.w300),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                Column(
-                  children: question.response.map((String value) {
-                    return _buildButton(value);
-                  }).toList(),
-                )
-              ],
+    return SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.only(bottom: 16.0),
+          child: Card(
+          elevation: 2.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16.0))),
+          child: Align(
+            alignment: Alignment.center,
+            child: Container(
+              padding: EdgeInsets.all(32.0),
+              child: Column(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.3,
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          child: SvgPicture.asset(question.image,
+                              semanticsLabel: question.questionText,
+                              placeholderBuilder: (BuildContext context){
+                                return Loading(
+                                    indicator: BallPulseIndicator(),
+                                    size: 40.0,color: Colors.pink);
+                              })),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      Text(
+                        question.questionText,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 22.0, fontWeight: FontWeight.w300),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Column(
+                    children: question.response.map((String value) {
+                      return _buildButton(value);
+                    }).toList(),
+                  )
+                ],
+              ),
             ),
-          ),
+          )),
         ));
   }
 
   Widget _buildResultWidget(Result result) {
-    return Card(
+    return SingleChildScrollView(
+        child: Card(
         elevation: 10.0,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16.0))),
@@ -354,12 +359,12 @@ class _CovidTest extends State<CovidTest> with SingleTickerProviderStateMixin {
                   ],
                 ),
                 SizedBox(
-                  height: 30.0,
+                  height: 16.0,
                 ),
               ],
             ),
           ),
-        ));
+        )));
   }
 
   Widget _buildButton(String type) {

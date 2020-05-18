@@ -23,7 +23,7 @@ class _CovidTest extends State<CovidTest> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    FirebaseAnalyticsHelper.setCurrentScreen("CovidTest", "Covid Test");
+    FirebaseAnalyticsHelper.setCurrentScreen("CovidTest", "Covid Test Class");
     _questions = [
       Question("Do you have cold?", "assets/images/cold.svg", ["Yes", "No"]),
       Question("Do you have cough?", "assets/images/cough.svg", ["Yes", "No"]),

@@ -1,7 +1,9 @@
 import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
+import 'package:covidtracker/helper/Common.dart';
 import 'package:covidtracker/models/News.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -30,8 +32,10 @@ class _Details extends State<Details> {
   @override
   void initState() {
     super.initState();
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => Common.showNoNetworkDialog(context));
     FirebaseAnalyticsHelper.setCurrentScreen("DetailsNewsPage", "Details News"
-        " Page");
+        " Class");
 
   }
   @override

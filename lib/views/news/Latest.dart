@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
+import 'package:covidtracker/helper/Common.dart';
 import 'package:covidtracker/models/News.dart';
 import 'package:covidtracker/util/Constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -29,8 +31,10 @@ class _LatestState extends State<Latest> {
   @override
   void initState() {
     super.initState();
-    FirebaseAnalyticsHelper.setCurrentScreen("LatestNewsPage", "LatestNewsPag"
-        "e");
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => Common.showNoNetworkDialog(context));
+    FirebaseAnalyticsHelper.setCurrentScreen("LatestNewsPage", "Latest News "
+        "Class");
     _whatNewsShouldLoad();
   }
 
@@ -42,12 +46,18 @@ class _LatestState extends State<Latest> {
 
   Future<void> _whatNewsShouldLoad() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var _ = prefs.getBool('should_load_alternative_news');
-    setState(() {
-      _
-          ? widget._localNews = _fetchGlobalNewsIfNoLocal()
-          : widget._localNews = _fetchLocalNews();
-    });
+    var value = prefs.get('should_load_alternative_news');
+    if(prefs.containsKey('should_load_alternative_news')) {
+      setState(() {
+      widget._localNews = value
+          ? _fetchGlobalNewsIfNoLocal()
+          : _fetchLocalNews();
+       });
+    }else{
+      setState(() {
+        widget._localNews = _fetchLocalNews();
+      });
+    }
   }
 
   Future<void> loadAlternativeNews(bool value) async {
@@ -57,7 +67,6 @@ class _LatestState extends State<Latest> {
 
   Future<List<News>> _fetchLocalNews() async {
     var country = await getCountry();
-    print(country);
     var response =
         await http.get(Constant.createLocalNewsUrl(country.substring(0, 2)));
     if (response.statusCode == 200) {

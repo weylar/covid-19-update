@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
+import 'package:covidtracker/helper/Common.dart';
 import 'package:covidtracker/models/Country.dart';
 import 'package:covidtracker/util/Constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -28,17 +30,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    FirebaseAnalyticsHelper.setCurrentScreen("Home", "Home");
+    FirebaseAnalyticsHelper.setCurrentScreen("Home", "Home class");
     _getSavedCountry();
     _countries = _fetchAllCountries();
-
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => Common.showNoNetworkDialog(context));
   }
 
   _getSavedCountry() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var country = prefs.getString('country');
     var countryIso = prefs.getString('country_iso');
-    if (country.isEmpty) {
+    if (!prefs.containsKey('country')) {
       _saveCountry("Nigeria", "NGA");
       _selectedCountry = "Nigeria";
     } else {
@@ -53,27 +56,26 @@ class _MyHomePageState extends State<MyHomePage> {
     await prefs.setString('country_iso', iso);
   }
 
-  _cacheAllCountries(String allCountries) async{
+  _cacheAllCountries(String allCountries) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('all_country', allCountries);
   }
 
-  Future<String> _readCachedCountries() async{
+  Future<String> _readCachedCountries() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-   return  prefs.getString('all_country');
+    return prefs.getString('all_country');
   }
 
   Future<List<Country>> _fetchAllCountries() async {
     var allCountries = await _readCachedCountries();
-    if (allCountries != null){
+    if (allCountries != null) {
       var result = json.decode(allCountries) as List;
-      var raw = result.map((val) => Country.fromJson(val))
-          .toList();
+      var raw = result.map((val) => Country.fromJson(val)).toList();
       raw.sort((a, b) {
         return a.name.toLowerCase().compareTo(b.name.toLowerCase());
       });
       return raw;
-    }else {
+    } else {
       var response = await http.get(Constant.ALL_COUNTRY_API, headers: {
         "x-rapidapi-key": Constant.API_KEY_STATISTICS,
         "x-rapidapi-host": Constant.HOST_STATISTICS
@@ -152,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Text(
                           "If you feel sick with any of covid-19 symptoms,"
                           " please call or SMS your country's health body "
-                              "for help.",
+                          "for help.",
                           style: TextStyle(
                             letterSpacing: 0.4,
                             color: Colors.white,
@@ -472,8 +474,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       underline: DropdownButtonHideUnderline(
                         child: Text(""),
                       ),
-                      value: _selectedCountry == null ? "Nigeria" :
-                      _selectedCountry,
+                      value: _selectedCountry == null
+                          ? "Nigeria"
+                          : _selectedCountry,
                       items: snapshot.data.map((Country country) {
                         return DropdownMenuItem<String>(
                           value: country.name,
@@ -510,7 +513,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  _nullGraphData() async{
+  _nullGraphData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("graph_data", null);
   }

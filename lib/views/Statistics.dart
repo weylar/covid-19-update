@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
+import 'package:covidtracker/helper/Common.dart';
 import 'package:covidtracker/models/CovidResponse.dart';
 import 'package:covidtracker/util/Constant.dart';
 import 'package:covidtracker/views/widgets/BucketingAxisScatterPlotChart.dart';
 import 'package:covidtracker/views/widgets/TimeSeriesBar.dart';
 import 'package:cupertino_tabbar/cupertino_tabbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -34,10 +36,12 @@ class _Statistics extends State<Statistics> {
   @override
   void initState() {
     super.initState();
-    FirebaseAnalyticsHelper.setCurrentScreen("Statistics", "Statistics");
+    FirebaseAnalyticsHelper.setCurrentScreen("Statistics", "Statistics class");
     _responseTotalLocal = _fetchStatisticsTotalLocal();
     _responseTotalGlobal = _fetchStatisticsTotalGlobal();
     _responseConfirmed7DaysDiff = _fetchStatisticsTotalLocal7daysBack();
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => Common.showNoNetworkDialog(context));
   }
 
   Future<List<CovidResponse>> _fetchStatisticsTotalLocal() async {
@@ -524,7 +528,16 @@ class _Statistics extends State<Statistics> {
                                 default:
                                   if (snapshot.hasError ||
                                       snapshot.data.length < 1) {
-                                    return Text("0");
+                                    return Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Container(
+                                            child: Text('0',
+                                                style: TextStyle(
+                                                    fontSize: 22.0,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                                textAlign: TextAlign.left)));
                                   } else {
                                     var fmf = FlutterMoneyFormatter(
                                         amount: pos == 0

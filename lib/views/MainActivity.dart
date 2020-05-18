@@ -119,7 +119,8 @@ class _MainActivity extends State<MainActivity> {
   }
 
   Widget _buildPageToShow(ViewType viewType) {
-   FirebaseAnalyticsHelper.setCurrentScreen("MainActivity", "MainActivity");
+   FirebaseAnalyticsHelper.setCurrentScreen("MainActivity", "MainActivity "
+       "Class");
     switch (viewType) {
       case ViewType.HOME:
         return MyHomePage.instance;

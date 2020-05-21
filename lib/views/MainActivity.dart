@@ -4,17 +4,15 @@ import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
 import 'package:covidtracker/helper/ViewType.dart';
 import 'package:covidtracker/models/News.dart';
 import 'package:covidtracker/views/Home.dart';
-import 'package:covidtracker/views/InAppBrowser.dart';
 import 'package:covidtracker/views/Statistics.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
+
 import 'news/Latest.dart';
 
 class MainActivity extends StatefulWidget {
-  final MyInAppBrowser browser = new MyInAppBrowser();
   Future<List<News>> _globalNews;
   Future<List<News>> _localNews;
 
@@ -31,14 +29,12 @@ class _MainActivity extends State<MainActivity> {
   ViewType viewType;
   GlobalKey _bottomNavigationKey = GlobalKey();
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor:
-        viewType == ViewType.UPDATES ? Colors.white : Colors.deepPurple,
+            viewType == ViewType.UPDATES ? Colors.white : Colors.deepPurple,
         elevation: 0.0,
         actions: <Widget>[
           GestureDetector(
@@ -52,19 +48,13 @@ class _MainActivity extends State<MainActivity> {
                 size: 28.0,
               ),
             ),
-            onTap: () {
+            onTap: () async {
               var websites = [
                 "https://www.who.int/health-topics/coronavirus",
                 "https://www.unicef.org/coronavirus/covid-19"
               ];
-              widget.browser.openUrl(
-                  url: websites[Random.secure().nextInt(websites.length)],
-                  options: InAppBrowserClassOptions(
-                      inAppWebViewGroupOptions: InAppWebViewGroupOptions(
-                          crossPlatform: InAppWebViewOptions(
-                            useShouldOverrideUrlLoading: true,
-                            useOnLoadResource: true,
-                          ))));
+              await FlutterWebBrowser.openWebPage(
+                  url: websites[Random.secure().nextInt(websites.length)]);
             },
           )
         ],
@@ -119,8 +109,10 @@ class _MainActivity extends State<MainActivity> {
   }
 
   Widget _buildPageToShow(ViewType viewType) {
-   FirebaseAnalyticsHelper.setCurrentScreen("MainActivity", "MainActivity "
-       "Class");
+    FirebaseAnalyticsHelper.setCurrentScreen(
+        "MainActivity",
+        "MainActivity "
+            "Class");
     switch (viewType) {
       case ViewType.HOME:
         return MyHomePage.instance;

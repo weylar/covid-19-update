@@ -4,17 +4,14 @@ import 'package:covidtracker/models/News.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:timeago/browser_timeago.dart';
 
-import '../InAppBrowser.dart';
-
 class Details extends StatefulWidget {
   Future<News> _news;
-  final MyInAppBrowser browser = new MyInAppBrowser();
 
   Details(Future<News> news) {
     this._news = news;
@@ -248,14 +245,7 @@ class _Details extends State<Details> {
   }
 
   _launchURL(String url) async {
-    widget.browser.openUrl(
-        url: url,
-        options: InAppBrowserClassOptions(
-            inAppWebViewGroupOptions: InAppWebViewGroupOptions(
-                crossPlatform: InAppWebViewOptions(
-                  useShouldOverrideUrlLoading: true,
-                  useOnLoadResource: true,
-                ))));
+    await FlutterWebBrowser.openWebPage(url: url);
 
   }
 }

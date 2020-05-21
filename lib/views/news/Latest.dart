@@ -71,7 +71,10 @@ class _LatestState extends State<Latest> {
         await http.get(Constant.createLocalNewsUrl(country.substring(0, 2)));
     if (response.statusCode == 200) {
       final List parsed = json.decode(response.body)['articles'];
-      return parsed.map((val) => News.fromJson(val)).toList();
+      var result = parsed.map((val) => News.fromJson(val)).toList();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('last_local_time', result.first.publishedAt);
+      return result;
     }
     return List();
   }

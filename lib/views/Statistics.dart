@@ -148,12 +148,15 @@ class _Statistics extends State<Statistics> {
   }
 
   Future<CovidResponse> _fetchStatisticsTotalGlobal() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     var response = await http.get(Constant.GLOBAL_COVID_API, headers: {
       "x-rapidapi-key": Constant.API_KEY_STATISTICS,
       "x-rapidapi-host": Constant.HOST_STATISTICS
     });
     if (response.statusCode == 200) {
-      return CovidResponse.fromJson(json.decode(response.body)['data']);
+      var result = CovidResponse.fromJson(json.decode(response.body)['data']);
+      prefs.setString("last_day_global_fetched", result.date);
+      return result;
     } else {
       return CovidResponse();
     }

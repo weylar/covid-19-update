@@ -9,12 +9,14 @@ import 'package:covidtracker/views/MainActivity.dart';
 import 'package:covidtracker/views/Statistics.dart';
 import 'package:covidtracker/views/news/Details.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crashlytics/flutter_crashlytics.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:http/http.dart' as http;
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +29,9 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 NotificationAppLaunchDetails notificationAppLaunchDetails;
 final BehaviorSubject<String> selectNotificationSubject =
     BehaviorSubject<String>();
+final BehaviorSubject<String> selectNotificationFirebaseSubject =
+    BehaviorSubject<String>();
+
 
 void callbackDispatcher() async {
   Workmanager.executeTask((task, inputData) async {
@@ -91,6 +96,7 @@ void callbackDispatcher() async {
     return Future.value(true);
   });
 }
+
 
 Future displayNewsNotification(
     News news, int uniqueId, int id, String type) async {
@@ -219,6 +225,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   Future<List<News>> _globalNews;
   Future<List<News>> _localNews;
 
@@ -229,6 +236,29 @@ class _MyAppState extends State<MyApp> {
     _globalNews = _fetchGlobalNews();
     _whatNewsShouldLoad();
     _configureSelectNotificationNews();
+    _firebaseNotificationAction();
+  }
+
+  void _firebaseNotificationAction() {
+      _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        _navigateToWebView(message);
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        _navigateToWebView(message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        _navigateToWebView(message);
+
+      },
+    );
+  }
+
+  void _navigateToWebView(Map<String, dynamic> message) async {
+    var data = message['data'];
+    if (data != null) {
+      await FlutterWebBrowser.openWebPage(url: data['url']);
+    }
   }
 
   void _configureSelectNotificationNews() {

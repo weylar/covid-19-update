@@ -43,7 +43,7 @@ class WorkScheduler {
     return Workmanager.registerPeriodicTask(
         localNewsPeriodicUniqueName, localNewsPeriodicTask,
         frequency: Duration(hours: 1),
-        existingWorkPolicy: ExistingWorkPolicy.replace,
+        existingWorkPolicy: ExistingWorkPolicy.keep,
         constraints: Constraints(networkType: NetworkType.connected));
   }
 
@@ -51,7 +51,7 @@ class WorkScheduler {
     return Workmanager.registerPeriodicTask(
         globalNewsPeriodicUniqueName, globalNewsPeriodicTask,
         frequency: Duration(hours: 1),
-        existingWorkPolicy: ExistingWorkPolicy.replace,
+        existingWorkPolicy: ExistingWorkPolicy.keep,
         constraints: Constraints(networkType: NetworkType.connected));
   }
 
@@ -71,7 +71,7 @@ class WorkScheduler {
         return result.where((element) => DateTime.parse(element.publishedAt)
             .isAfter(DateTime.parse(lastFetchedTime))).toList();
       }
-      return result.sublist(0, 2).toList();
+      return null;
     }
     return null;
   }
@@ -90,7 +90,7 @@ class WorkScheduler {
         return result.where((element) => DateTime.parse(element.publishedAt)
             .isAfter(DateTime.parse(lastFetchedTime))).toList();
       }
-      return result.sublist(0, 2).toList();
+      return null;
     }
     return null;
   }

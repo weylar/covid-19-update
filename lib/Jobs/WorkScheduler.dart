@@ -68,8 +68,10 @@ class WorkScheduler {
       if (DateTime.parse(previousTime)
           .isBefore(DateTime.parse(lastFetchedTime))) {
         prefs.setString("last_local_time", lastFetchedTime);
-        return result.where((element) => DateTime.parse(element.publishedAt)
-            .isAfter(DateTime.parse(lastFetchedTime))).toList();
+        return result
+            .where((element) => DateTime.parse(element.publishedAt)
+                .isAfter(DateTime.parse(lastFetchedTime)))
+            .toList();
       }
       return null;
     }
@@ -87,8 +89,10 @@ class WorkScheduler {
       if (DateTime.parse(previousTime)
           .isBefore(DateTime.parse(lastFetchedTime))) {
         prefs.setString("last_global_time", lastFetchedTime);
-        return result.where((element) => DateTime.parse(element.publishedAt)
-            .isAfter(DateTime.parse(lastFetchedTime))).toList();
+        return result
+            .where((element) => DateTime.parse(element.publishedAt)
+                .isAfter(DateTime.parse(lastFetchedTime)))
+            .toList();
       }
       return null;
     }
@@ -106,8 +110,23 @@ class WorkScheduler {
     if (response.statusCode == 200) {
       final List parsed = json.decode(response.body)['data'];
       var result = parsed.map((val) => CovidResponse.fromJson(val)).toList();
+      var graphData = prefs.getString('graph_data');
+      if (prefs.containsKey('graph_data')){
+      var list = jsonDecode(graphData);
+      if (DateTime.parse(result.first.date)
+          .isAfter(DateTime.parse(list.first["date"]))) {
+        list.insert(0, {
+          "date": result.first.date,
+          "confirmedDiff": result.first.confirmedDiff
+        });
+        list.removeLast();
+        prefs.setString("graph_data", json.encode(list));
+      }
+      }
+
       var lastFetchedDate = result.first.date;
       var previousDate = prefs.getString("last_day_fetched");
+
       if (DateTime.parse(previousDate)
           .isBefore(DateTime.parse(lastFetchedDate))) {
         prefs.setString("last_day_fetched", lastFetchedDate);

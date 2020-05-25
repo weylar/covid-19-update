@@ -110,7 +110,6 @@ class _Statistics extends State<Statistics> {
                   {"date": result.date, "confirmedDiff": result.confirmedDiff});
               list.removeLast();
               _saveGraphData(json.encode(list));
-
             }
           }
         } else {
@@ -118,7 +117,6 @@ class _Statistics extends State<Statistics> {
         }
       }
 
-      print(list.toString());
       return list.cast<Map<String, dynamic>>();
     } else {
       var list = List<Map<String, dynamic>>();
@@ -169,44 +167,44 @@ class _Statistics extends State<Statistics> {
             color: Colors.deepPurple,
             child: SingleChildScrollView(
                 child: Column(
-                  children: <Widget>[
-                    Padding(
-                        padding: const EdgeInsets.only(
-                            left: 16.0, right: 16.0, bottom: 32.0),
-                        child: Column(
+              children: <Widget>[
+                Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, bottom: 32.0),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Statistics",
-                                  style: TextStyle(
-                                      fontSize: 24.0,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 16.0),
-                            _buildCountryTab(),
-                            SizedBox(height: 8.0),
-                            _buildTimeTab(),
-                            SizedBox(height: 8.0),
-                            _getTimePosition() == 0
-                                ? _buildResultBlock(0, _responseTotalLocal)
-                                : _getTimePosition() == 1
-                                    ? _buildResultBlock(1, _responseTotalLocal)
-                                    : _buildResultBlock(2, _responseTotalLocal),
-                            SizedBox(
-                              height: 4.0,
+                            Text(
+                              "Statistics",
+                              style: TextStyle(
+                                  fontSize: 24.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ],
-                        )),
-                    _getCountryPosition() == 0
-                        ? _buildGraphReportLocal(_responseConfirmed7DaysDiff)
-                        : _buildGraphReportGlobal(_responseTotalLocal),
-                  ],
-                ))));
+                        ),
+                        SizedBox(height: 16.0),
+                        _buildCountryTab(),
+                        SizedBox(height: 8.0),
+                        _buildTimeTab(),
+                        SizedBox(height: 8.0),
+                        _getTimePosition() == 0
+                            ? _buildResultBlock(0, _responseTotalLocal)
+                            : _getTimePosition() == 1
+                                ? _buildResultBlock(1, _responseTotalLocal)
+                                : _buildResultBlock(2, _responseTotalLocal),
+                        SizedBox(
+                          height: 4.0,
+                        ),
+                      ],
+                    )),
+                _getCountryPosition() == 0
+                    ? _buildGraphReportLocal(_responseConfirmed7DaysDiff)
+                    : _buildGraphReportGlobal(_responseTotalLocal),
+              ],
+            ))));
   }
 
   Widget _buildGraphReportLocal(Future<List<Map<String, dynamic>>> response) {
@@ -266,7 +264,8 @@ class _Statistics extends State<Statistics> {
                                 .asMap()
                                 .map((index, response) => MapEntry(
                                     index,
-                                    CovidUpdate(DateTime.parse(response['date']),
+                                    CovidUpdate(
+                                        DateTime.parse(response['date']),
                                         response["confirmedDiff"])))
                                 .values
                                 .toList();
@@ -540,7 +539,7 @@ class _Statistics extends State<Statistics> {
                                                     fontSize: 22.0,
                                                     color: Colors.white,
                                                     fontWeight:
-                                                    FontWeight.bold),
+                                                        FontWeight.bold),
                                                 textAlign: TextAlign.left)));
                                   } else {
                                     var fmf = FlutterMoneyFormatter(
@@ -951,13 +950,13 @@ class _Statistics extends State<Statistics> {
                                         child: Container(
                                             child: Text(
                                                 (snapshot.data.fold(
-                                                        0,
-                                                        (value, element) =>
-                                                            value +
-                                                            element
-                                                                .fatalityRate) /
-                                                    (snapshot.data.length))
-                                                        .toStringAsFixed(4),
+                                                            0,
+                                                            (value, element) =>
+                                                                value +
+                                                                element
+                                                                    .fatalityRate) /
+                                                        (snapshot.data.length))
+                                                    .toStringAsFixed(4),
                                                 style: TextStyle(
                                                     fontSize: 16.0,
                                                     color: Colors.white,

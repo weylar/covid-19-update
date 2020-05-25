@@ -18,7 +18,7 @@ class Common {
           builder: (BuildContext context) {
             return Dialog(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)), //this right here
+                  borderRadius: BorderRadius.circular(18.0)), //this right here
               child: Container(
                 height: 150,
                 child: Padding(

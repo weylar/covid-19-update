@@ -10,9 +10,11 @@ import 'package:workmanager/workmanager.dart';
 const localReportPeriodicTask = "fetchDailyReportPeriodicTask";
 const globalReportPeriodicTask = "fetchGlobalReportPeriodicTask";
 const localNewsPeriodicTask = "fetchLocalNewsPeriodicTask";
+const globalNewsPeriodicTask = "fetchGlobalNewsPeriodicTask";
 const localReportPeriodicUniqueName = "1";
 const globalReportPeriodicUniqueName = "2";
 const localNewsPeriodicUniqueName = "3";
+const globalNewsPeriodicUniqueName = "4";
 
 class WorkScheduler {
   static Future<String> getCountry() async {
@@ -41,7 +43,15 @@ class WorkScheduler {
     return Workmanager.registerPeriodicTask(
         localNewsPeriodicUniqueName, localNewsPeriodicTask,
         frequency: Duration(hours: 1),
-        existingWorkPolicy: ExistingWorkPolicy.keep,
+        existingWorkPolicy: ExistingWorkPolicy.replace,
+        constraints: Constraints(networkType: NetworkType.connected));
+  }
+
+  static Future<void> callbackFetchGlobalNews() {
+    return Workmanager.registerPeriodicTask(
+        globalNewsPeriodicUniqueName, globalNewsPeriodicTask,
+        frequency: Duration(hours: 1),
+        existingWorkPolicy: ExistingWorkPolicy.replace,
         constraints: Constraints(networkType: NetworkType.connected));
   }
 
@@ -61,7 +71,26 @@ class WorkScheduler {
         return result.where((element) => DateTime.parse(element.publishedAt)
             .isAfter(DateTime.parse(lastFetchedTime))).toList();
       }
-      return null;
+      return result.sublist(0, 2).toList();
+    }
+    return null;
+  }
+
+  static Future<List<News>> checkNewDailyGlobalNews() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await http.get(Constant.GLOBAL_NEWS_URL);
+    if (response.statusCode == 200) {
+      final List parsed = json.decode(response.body)['articles'];
+      var result = parsed.map((val) => News.fromJson(val)).toList();
+      var lastFetchedTime = result.first.publishedAt;
+      var previousTime = prefs.getString('last_global_time');
+      if (DateTime.parse(previousTime)
+          .isBefore(DateTime.parse(lastFetchedTime))) {
+        prefs.setString("last_global_time", lastFetchedTime);
+        return result.where((element) => DateTime.parse(element.publishedAt)
+            .isAfter(DateTime.parse(lastFetchedTime))).toList();
+      }
+      return result.sublist(0, 2).toList();
     }
     return null;
   }

@@ -48,8 +48,7 @@ void callbackDispatcher() async {
                   FlutterMoneyFormatter(amount: datumG.confirmedDiff.toDouble())
                           .output
                           .withoutFractionDigits +
-                      ' new cases were '
-                          'reported in the world. See update',
+                      ' new cases were reported in the world. See update',
               'local': FlutterMoneyFormatter(amount: confirmedDiff.toDouble())
                       .output
                       .withoutFractionDigits +
@@ -69,10 +68,22 @@ void callbackDispatcher() async {
         break;
       case localNewsPeriodicTask:
         var data = WorkScheduler.checkNewDailyLocalNews();
+
         var datum = await data;
         if (datum != null) {
           datum.forEach((element) {
-            displayNewsNotification(element, datum.indexOf(element));
+            displayNewsNotification(element, datum.indexOf(element),
+                datum.indexOf(element), 'local');
+          });
+        }
+        break;
+      case globalNewsPeriodicTask:
+        var data = WorkScheduler.checkNewDailyGlobalNews();
+        var datum = await data;
+        if (datum != null) {
+          datum.forEach((element) {
+            displayNewsNotification(element, 100 + datum.indexOf(element),
+                datum.indexOf(element), 'global');
           });
         }
         break;
@@ -81,11 +92,14 @@ void callbackDispatcher() async {
   });
 }
 
-Future displayNewsNotification(News news, int id) async {
-  var inboxStyleInformation =
-      InboxStyleInformation([], summaryText: 'News Update');
+Future displayNewsNotification(
+    News news, int uniqueId, int id, String type) async {
+  var inboxStyleInformation = InboxStyleInformation([],
+      summaryText: type == 'local'
+          ? 'Local Covid News Update'
+          : 'Global Covid News Update');
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      '100', 'News', 'News update',
+      type == 'local' ? '100' : '102', 'News', 'News update',
       importance: Importance.High,
       ticker: 'ticker',
       styleInformation: inboxStyleInformation,
@@ -93,8 +107,10 @@ Future displayNewsNotification(News news, int id) async {
   var notificationDetails =
       NotificationDetails(androidPlatformChannelSpecifics, null);
   await flutterLocalNotificationsPlugin.show(
-      id, news.title, news.description, notificationDetails,
-      payload: id.toString());
+      uniqueId, news.title, news.description, notificationDetails,
+      payload: type == 'local'
+          ? 'local/' + id.toString()
+          : 'global/' + id.toString());
 }
 
 Future displayReportNotification(Map<String, dynamic> titles,
@@ -142,7 +158,7 @@ Future displayReportNotification(Map<String, dynamic> titles,
   var platformChannelSpecifics =
       NotificationDetails(androidPlatformChannelSpecifics, null);
   await flutterLocalNotificationsPlugin.show(
-      3, 'Covid 19 Update', 'Two messages', platformChannelSpecifics,
+      3, 'Covid-19 Update', 'Two messages', platformChannelSpecifics,
       payload: "report");
 }
 
@@ -154,6 +170,9 @@ Future initiateWorker() async {
   }
   if (prefs.containsKey('last_local_time')) {
     await WorkScheduler.callbackFetchLocalNews();
+  }
+  if (prefs.containsKey('last_global_time')) {
+    await WorkScheduler.callbackFetchGlobalNews();
   }
 }
 
@@ -214,14 +233,16 @@ class _MyAppState extends State<MyApp> {
 
   void _configureSelectNotificationNews() {
     selectNotificationSubject.stream.listen((String payload) async {
-      if (payload == 'report'){
+      if (payload == 'report') {
         MyApp.navigatorKey.currentState
             .push(MaterialPageRoute(builder: (context) => Statistics()));
-      }else {
+      } else if (payload.contains('local')) {
         MyApp.navigatorKey.currentState
-            .pushNamed('/news/' + 'local' + "/" + payload);
+            .pushNamed('/news/' + 'local' + "/" + payload.split('/')[1]);
+      } else if (payload.contains('global')) {
+        MyApp.navigatorKey.currentState
+            .pushNamed('/news/' + 'global' + "/" + payload.split('/')[1]);
       }
-
     });
   }
 
@@ -253,7 +274,10 @@ class _MyAppState extends State<MyApp> {
     var response = await http.get(Constant.GLOBAL_NEWS_URL);
     if (response.statusCode == 200) {
       final List parsed = json.decode(response.body)['articles'];
-      return parsed.map((val) => News.fromJson(val)).toList();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var result = parsed.map((val) => News.fromJson(val)).toList();
+      prefs.setString('last_global_time', result.first.publishedAt);
+      return result;
     } else {
       return List();
     }

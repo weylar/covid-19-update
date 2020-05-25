@@ -57,9 +57,7 @@ class _Details extends State<Details> {
                     return Container(
                         height: MediaQuery.of(context).size.height * 0.7,
                         child: Center(
-                            child: Text(
-                          'Unable to connect to the internet. '
-                          'Please check you internet connection.',
+                            child: Text(snapshot.error.toString(),
                           textAlign: TextAlign.center,
                         )));
                   else {

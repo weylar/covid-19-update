@@ -70,7 +70,7 @@ class WorkScheduler {
         prefs.setString("last_local_time", lastFetchedTime);
         return result
             .where((element) => DateTime.parse(element.publishedAt)
-                .isAfter(DateTime.parse(lastFetchedTime)))
+                .isAfter(DateTime.parse(previousTime)))
             .toList();
       }
       return null;
@@ -91,7 +91,7 @@ class WorkScheduler {
         prefs.setString("last_global_time", lastFetchedTime);
         return result
             .where((element) => DateTime.parse(element.publishedAt)
-                .isAfter(DateTime.parse(lastFetchedTime)))
+                .isAfter(DateTime.parse(previousTime)))
             .toList();
       }
       return null;

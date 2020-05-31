@@ -6,7 +6,6 @@ import 'package:covidtracker/analytics/FirebaseAnalyticsHelper.dart';
 import 'package:covidtracker/util/Constant.dart';
 import 'package:covidtracker/views/CovidTest.dart';
 import 'package:covidtracker/views/MainActivity.dart';
-import 'package:covidtracker/views/Statistics.dart';
 import 'package:covidtracker/views/news/Details.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -31,7 +30,6 @@ final BehaviorSubject<String> selectNotificationSubject =
     BehaviorSubject<String>();
 final BehaviorSubject<String> selectNotificationFirebaseSubject =
     BehaviorSubject<String>();
-
 
 void callbackDispatcher() async {
   Workmanager.executeTask((task, inputData) async {
@@ -76,9 +74,13 @@ void callbackDispatcher() async {
 
         var datum = await data;
         if (datum != null) {
-          datum.forEach((element) {
-            displayNewsNotification(element, datum.indexOf(element),
-                datum.indexOf(element), 'local');
+          datum.forEach((el) {
+            displayNewsNotification(
+                el,
+                datum.indexOf(el),
+                datum.indexWhere(
+                    (element) => element.publishedAt == el.publishedAt),
+                'local');
           });
         }
         break;
@@ -86,9 +88,13 @@ void callbackDispatcher() async {
         var data = WorkScheduler.checkNewDailyGlobalNews();
         var datum = await data;
         if (datum != null) {
-          datum.forEach((element) {
-            displayNewsNotification(element, 100 + datum.indexOf(element),
-                datum.indexOf(element), 'global');
+          datum.forEach((el) {
+            displayNewsNotification(
+                el,
+                100 + datum.indexOf(el),
+                datum.indexWhere(
+                    (element) => element.publishedAt == el.publishedAt),
+                'global');
           });
         }
         break;
@@ -96,7 +102,6 @@ void callbackDispatcher() async {
     return Future.value(true);
   });
 }
-
 
 Future displayNewsNotification(
     News news, int uniqueId, int id, String type) async {
@@ -237,10 +242,15 @@ class _MyAppState extends State<MyApp> {
     _whatNewsShouldLoad();
     _configureSelectNotificationNews();
     _firebaseNotificationAction();
+    _clearAllNotification();
+  }
+
+  Future<void> _clearAllNotification() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
   }
 
   void _firebaseNotificationAction() {
-      _firebaseMessaging.configure(
+    _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         _navigateToWebView(message);
       },
@@ -249,7 +259,6 @@ class _MyAppState extends State<MyApp> {
       },
       onResume: (Map<String, dynamic> message) async {
         _navigateToWebView(message);
-
       },
     );
   }
@@ -264,8 +273,8 @@ class _MyAppState extends State<MyApp> {
   void _configureSelectNotificationNews() {
     selectNotificationSubject.stream.listen((String payload) async {
       if (payload == 'report') {
-        MyApp.navigatorKey.currentState
-            .push(MaterialPageRoute(builder: (context) => Statistics()));
+        /* MyApp.navigatorKey.currentState
+            .push(MaterialPageRoute(builder: (context) => Statistics()));*/
       } else if (payload.contains('local')) {
         MyApp.navigatorKey.currentState
             .pushNamed('/news/' + 'local' + "/" + payload.split('/')[1]);
